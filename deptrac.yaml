@@ -1,0 +1,58 @@
+deptrac:
+    paths:
+        - ./src
+    exclude_files:
+        - '#.*Kernel\.php$#'
+
+    layers:
+        # --- Shared kernel: generic value objects only (UserId, ...) ---
+        - name: Shared
+          collectors:
+              - type: directory
+                value: src/Shared/.*
+
+        # --- TasteCollection ---
+        - name: TasteCollection.Domain
+          collectors:
+              - type: directory
+                value: src/TasteCollection/Domain/.*
+        - name: TasteCollection.Application
+          collectors:
+              - type: directory
+                value: src/TasteCollection/Application/.*
+        - name: TasteCollection.Infrastructure
+          collectors:
+              - type: directory
+                value: src/TasteCollection/Infrastructure/.*
+
+        # --- Social ---
+        - name: Social.Domain
+          collectors:
+              - type: directory
+                value: src/Social/Domain/.*
+        - name: Social.Application
+          collectors:
+              - type: directory
+                value: src/Social/Application/.*
+        - name: Social.Infrastructure
+          collectors:
+              - type: directory
+                value: src/Social/Infrastructure/.*
+
+        # --- Frameworks (vendor): only Infrastructure may touch them ---
+        - name: Framework
+          collectors:
+              - type: classLike
+                value: '^(Symfony|Doctrine)\\.*'
+
+    ruleset:
+        Shared: ~
+
+        TasteCollection.Domain: [Shared]
+        TasteCollection.Application: [TasteCollection.Domain, Shared]
+        TasteCollection.Infrastructure: [TasteCollection.Application, TasteCollection.Domain, Shared, Framework]
+
+        Social.Domain: [Shared]
+        # The only cross-module edge: Social's Application layer calls TasteCollection's API.
+        Social.Application: [Social.Domain, Shared, TasteCollection.Application]
+        Social.Infrastructure: [Social.Application, Social.Domain, Shared, Framework]

@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+# See also https://symfony.com/doc/current/service_container/import.html
+
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # Every class in src/ is a service, except domain objects (entities, value objects, events),
+    # which are created by code, never injected.
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/*/Domain/Model/'
+            - '../src/*/Domain/Event/'
+            - '../src/Shared/Domain/'
+
+    # Cross-module APIs: an interface in <Module>\Application with a single implementation
+    # is aliased automatically by autowiring. Add an explicit alias only if a second
+    # implementation appears, e.g.:
+    # App\TasteCollection\Application\TasteCollectionApi: '@App\TasteCollection\Application\TasteCollectionService'

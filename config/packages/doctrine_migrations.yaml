@@ -1,0 +1,7 @@
+doctrine_migrations:
+    migrations_paths:
+        # One physical folder, one namespace (not autoloaded by App\).
+        # Convention: prefix the description / class docblock with the owning module,
+        # e.g. "[TasteCollection] create ingredients table". A migration touches one module's tables only.
+        'DoctrineMigrations': '%kernel.project_dir%/migrations'
+    enable_profiler: false

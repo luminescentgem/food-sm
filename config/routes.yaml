@@ -1,0 +1,14 @@
+# Each module exposes its HTTP adapters from its own Infrastructure layer.
+taste_collection_api:
+    resource:
+        path: ../src/TasteCollection/Infrastructure/Http/Controller/
+        namespace: App\TasteCollection\Infrastructure\Http\Controller
+    type: attribute
+    prefix: /api
+
+social_api:
+    resource:
+        path: ../src/Social/Infrastructure/Http/Controller/
+        namespace: App\Social\Infrastructure\Http\Controller
+    type: attribute
+    prefix: /api
