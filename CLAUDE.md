@@ -169,3 +169,109 @@ php bin/console lint:container
 composer deptrac
 php bin/phpunit            # once symfony/test-pack is installed
 ```
+
+## Commit messages
+
+[Conventional Commits 1.0](https://www.conventionalcommits.org):
+
+```
+<type>(<scope>)<!>: <description>
+
+<body>
+
+<footers>
+```
+
+### Type
+
+| Type | Use for |
+|---|---|
+| `feat` | New or changed behaviour a caller can see: endpoint, use case, field, UI screen |
+| `fix` | A bug fix |
+| `perf` | A performance improvement with identical behaviour |
+| `refactor` | Any other code change with identical behaviour |
+| `style` | Formatting only (php-cs-fixer, Prettier), no code change |
+| `test` | Tests added or changed on their own |
+| `docs` | Documentation only: `CLAUDE.md`, `AGENTS.md`, READMEs, comments |
+| `build` | Dependencies and build setup: `composer`/`npm` changes (with the recipe files they generate), Vite/TypeScript config |
+| `ci` | CI pipelines |
+| `chore` | Everything else that isn't shipped code: dev tooling config (deptrac, PHPStan, php-cs-fixer, editorconfig), scaffolding, fixtures and seed data |
+| `revert` | Reverting an earlier commit (see below) |
+
+When two types fit, take the first one in this table. A change is one type: a
+`feat` commit includes its tests, its migration and XML mapping, and any
+`CLAUDE.md` update that describes it. `test` and `docs` are only for commits that
+contain nothing else.
+
+### Scope
+
+The part of the repository the change lives in, spelled as its directory:
+
+- a backend module: `Identity`, `TasteCollection`, `Social`, `Shared`
+  (`src/<Module>/`, and that module's migrations, config blocks and tests);
+- `frontend` for the React app (`frontend/`).
+
+Leave the scope out when a change spans several of these or touches none of them
+(root config, `deptrac.yaml` as a whole, `CLAUDE.md` sections that aren't about one
+module).
+
+A feature that needs both an endpoint and a screen is **two commits**: the backend
+one first, then the `frontend` one. Each migration touches one module's tables, so a
+commit never adds migrations for two modules.
+
+### Description
+
+- Imperative mood (`add`, not `added`/`adds`), no final period.
+- Starts with a lowercase letter; identifiers keep their casing
+  (`batch score lookups through TasteCollectionApi`).
+- The whole header, type and scope included, fits in 72 characters.
+- Says what changes for someone reading the log, not which files moved.
+
+### Body and footers
+
+- The body is optional. Write one when the *why* isn't obvious from the diff:
+  a decision, a rejected alternative, a constraint. Wrap at 72 characters.
+- Footers use git trailer syntax (`Token: value`), one per line, after a blank
+  line. `Co-Authored-By:` goes here.
+- **Breaking changes**: add `!` before the colon **and** a `BREAKING CHANGE:`
+  footer explaining the change and what callers must do. This is required whenever
+  an `/api` contract changes (path, method, request body, response shape, status
+  codes), because the frontend depends on it. The frontend commit that adapts to it
+  follows right after.
+- **Reverts**: `revert: <header of the reverted commit>`, with the body
+  `This reverts commit <sha>.` and a line on why.
+
+### Granularity
+
+- **One logical change per commit.** If the description needs "and" to join two
+  unrelated things, split it.
+- Every commit leaves the repo working: `lint:container`, `composer deptrac` and
+  `php bin/phpunit` pass (and the frontend builds, once it exists).
+- Don't add version or maintenance-type tags (`[minor]`, `[évolutive]`, …).
+  Versioning, if ever needed, is derived from the types and `!`.
+
+### Examples
+
+```
+feat(TasteCollection): add score upsert endpoint
+feat(frontend): add swipe page
+fix(Identity): return 404 for unknown user id
+perf(TasteCollection): load top ingredients in a single query
+refactor(Social): batch score lookups through TasteCollectionApi
+style: apply php-cs-fixer @Symfony ruleset
+build: add symfony/lock
+build(frontend): upgrade vite to 7
+chore: allow Social to depend on Identity in deptrac
+chore(TasteCollection): add ingredients CSV fixture
+docs: record ingredient source decision
+```
+
+```
+feat(TasteCollection)!: return top ingredients as objects
+
+The profile page needs names alongside scores; returning ids forced
+one extra request per ingredient.
+
+BREAKING CHANGE: GET /api/users/{userId}/ingredients now returns
+[{ id, name, score }] instead of a list of ids.
+```
