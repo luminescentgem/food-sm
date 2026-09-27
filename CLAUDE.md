@@ -25,8 +25,19 @@ Keep it minimal but complete.
 | Table | Purpose | Notes |
 |---|---|---|
 | `users` (Identity) | Test users | 2–3 hardcoded accounts, no auth |
-| `ingredients` (TasteCollection) | Items to rate and search | 250–500 rows; fields: name, category, region, created_at |
+| `ingredients` (TasteCollection) | Items to rate and search | 250–500 rows, LLM-generated CSV; fields below |
 | `user_ingredient_scores` (TasteCollection) | One score per (user, ingredient) | Created on first rating, updated afterwards; score 0–10; `user_id` is a plain `UserId`, not checked against Identity |
+
+Ingredient fields:
+
+| Field | Type | In CSV | Notes |
+|---|---|---|---|
+| `id` | int, autoincrement | no | |
+| `name` | string, unique | yes | English, singular, lowercase (`shiitake mushroom`); what search matches on |
+| `category` | enum | yes | vegetable, fruit, meat, fish_seafood, dairy_egg, grain_cereal, legume, nut_seed, herb_spice, condiment_sauce, fat_oil, sweetener, fungi, other |
+| `region` | string, nullable | yes | Cuisine it's most associated with (`East Asia`); null if universal; unused in the MVP |
+| `image_url` | string, nullable | no | Column exists; no images are loaded yet |
+| `created_at` | datetime | no | |
 
 ### API (JSON, all under `/api`)
 
@@ -50,7 +61,6 @@ event organization.
 
 ### Open questions (ask, don't decide)
 
-- Ingredient source: hand-written CSV, LLM-generated, or imported from an API.
 - Whether the comparison endpoint (`GET /api/ingredients/{id}` with two users' scores)
   lives in TasteCollection or in Social. The principle below says comparison is
   Social's job; the current URL shape suggests TasteCollection.
