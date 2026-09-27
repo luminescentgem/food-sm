@@ -10,6 +10,12 @@ doctrine:
         # the XML mapping lives in each module's Infrastructure layer.
         # File naming: <ShortClassName>.orm.xml (e.g. Ingredient.orm.xml)
         mappings:
+            Identity:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Identity/Infrastructure/Persistence/Doctrine/Mapping'
+                prefix: 'App\Identity\Domain\Model'
+                alias: Identity
             TasteCollection:
                 type: xml
                 is_bundle: false

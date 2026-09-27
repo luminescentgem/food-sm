@@ -11,6 +11,20 @@ deptrac:
               - type: directory
                 value: src/Shared/.*
 
+        # --- Identity: owns users ---
+        - name: Identity.Domain
+          collectors:
+              - type: directory
+                value: src/Identity/Domain/.*
+        - name: Identity.Application
+          collectors:
+              - type: directory
+                value: src/Identity/Application/.*
+        - name: Identity.Infrastructure
+          collectors:
+              - type: directory
+                value: src/Identity/Infrastructure/.*
+
         # --- TasteCollection ---
         - name: TasteCollection.Domain
           collectors:
@@ -48,11 +62,15 @@ deptrac:
     ruleset:
         Shared: ~
 
+        Identity.Domain: [Shared]
+        Identity.Application: [Identity.Domain, Shared]
+        Identity.Infrastructure: [Identity.Application, Identity.Domain, Shared, Framework]
+
         TasteCollection.Domain: [Shared]
         TasteCollection.Application: [TasteCollection.Domain, Shared]
         TasteCollection.Infrastructure: [TasteCollection.Application, TasteCollection.Domain, Shared, Framework]
 
         Social.Domain: [Shared]
-        # The only cross-module edge: Social's Application layer calls TasteCollection's API.
-        Social.Application: [Social.Domain, Shared, TasteCollection.Application]
+        # Cross-module edges: Social's Application layer calls TasteCollection's and Identity's APIs.
+        Social.Application: [Social.Domain, Shared, TasteCollection.Application, Identity.Application]
         Social.Infrastructure: [Social.Application, Social.Domain, Shared, Framework]

@@ -1,4 +1,11 @@
 # Each module exposes its HTTP adapters from its own Infrastructure layer.
+identity_api:
+    resource:
+        path: ../src/Identity/Infrastructure/Http/Controller/
+        namespace: App\Identity\Infrastructure\Http\Controller
+    type: attribute
+    prefix: /api
+
 taste_collection_api:
     resource:
         path: ../src/TasteCollection/Infrastructure/Http/Controller/

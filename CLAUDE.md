@@ -24,9 +24,9 @@ Keep it minimal but complete.
 
 | Table | Purpose | Notes |
 |---|---|---|
-| `users` | Test users | 2–3 hardcoded accounts, no auth |
-| `ingredients` | Items to rate and search | 250–500 rows; fields: name, category, region, created_at |
-| `user_ingredient_scores` | One score per (user, ingredient) | Created on first rating, updated afterwards; score 0–10 |
+| `users` (Identity) | Test users | 2–3 hardcoded accounts, no auth |
+| `ingredients` (TasteCollection) | Items to rate and search | 250–500 rows; fields: name, category, region, created_at |
+| `user_ingredient_scores` (TasteCollection) | One score per (user, ingredient) | Created on first rating, updated afterwards; score 0–10; `user_id` is a plain `UserId`, not checked against Identity |
 
 ### API (JSON, all under `/api`)
 
@@ -51,7 +51,6 @@ event organization.
 ### Open questions (ask, don't decide)
 
 - Ingredient source: hand-written CSV, LLM-generated, or imported from an API.
-- Which module owns `users` in the MVP (they're hardcoded test accounts).
 - Whether the comparison endpoint (`GET /api/ingredients/{id}` with two users' scores)
   lives in TasteCollection or in Social. The principle below says comparison is
   Social's job; the current URL shape suggests TasteCollection.
@@ -65,10 +64,14 @@ a rewrite. Not microservices: one process, one database.
 
 | Module | Owns | Status |
 |---|---|---|
+| `Identity` | Users (names and profile info) | MVP |
 | `TasteCollection` | Ingredients, users' scores, rating | MVP |
 | `Social` | Viewing and comparing users' profiles and scores | MVP |
 | `MealPlanning`, `EventHelper` | – | Don't create until work on them actually starts |
 | `Shared` | Generic value objects only (e.g. `UserId`) | – |
+
+Other modules refer to users only by `Shared\Domain\UserId`. Anything more (names,
+profile info) comes from Identity's API.
 
 ### Layout and layers
 
@@ -91,7 +94,8 @@ Namespaces: `App\<Module>\<Layer>\...` (the single `App\` → `src/` PSR-4 root)
    **Domain and Application never import `Symfony\` or `Doctrine\`.**
 3. **Cross-module calls go only through the target module's Application-layer API
    interface.** Never touch another module's Domain or Infrastructure. The only
-   allowed edge right now: `Social\Application` → `TasteCollection\Application`.
+   allowed edges right now: `Social\Application` → `TasteCollection\Application` and
+   `Social\Application` → `Identity\Application`.
 4. **Each module owns its tables.** No module queries another module's tables, and
    there are no foreign keys across modules, even though they share one database.
 5. **No shared domain model.** When a module needs a concept it doesn't own, it
