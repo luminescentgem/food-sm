@@ -4,14 +4,30 @@ deptrac:
     exclude_files:
         - '#.*Kernel\.php$#'
 
+    # Rules, in short:
+    #   - Inside a module: Domain → nothing; Application → Domain; Infrastructure → everything of its own module.
+    #   - Across modules: the ONLY importable part of a module is <Module>/Api (its published contract),
+    #     and only from another module's Application or Infrastructure, never from its Domain.
+    #   - Api itself depends on Shared.Domain only, so no internal type can leak through the contract.
+    #   - Shared.Domain is importable by everyone and imports nothing.
+    #   - Symfony and Doctrine (Framework) only in Infrastructure layers.
+
     layers:
-        # --- Shared kernel: generic value objects only (UserId, ...) ---
-        - name: Shared
+        # --- Shared ---
+        - name: Shared.Domain
           collectors:
               - type: directory
-                value: src/Shared/.*
+                value: src/Shared/Domain/.*
+        - name: Shared.Infrastructure
+          collectors:
+              - type: directory
+                value: src/Shared/Infrastructure/.*
 
         # --- Identity: owns users ---
+        - name: Identity.Api
+          collectors:
+              - type: directory
+                value: src/Identity/Api/.*
         - name: Identity.Domain
           collectors:
               - type: directory
@@ -25,7 +41,11 @@ deptrac:
               - type: directory
                 value: src/Identity/Infrastructure/.*
 
-        # --- TasteCollection ---
+        # --- TasteCollection: owns ingredients, preparations, variants, taste judgments ---
+        - name: TasteCollection.Api
+          collectors:
+              - type: directory
+                value: src/TasteCollection/Api/.*
         - name: TasteCollection.Domain
           collectors:
               - type: directory
@@ -39,7 +59,11 @@ deptrac:
               - type: directory
                 value: src/TasteCollection/Infrastructure/.*
 
-        # --- Social ---
+        # --- Social: viewing and comparing profiles ---
+        - name: Social.Api
+          collectors:
+              - type: directory
+                value: src/Social/Api/.*
         - name: Social.Domain
           collectors:
               - type: directory
@@ -60,17 +84,20 @@ deptrac:
                 value: '^(Symfony|Doctrine)\\.*'
 
     ruleset:
-        Shared: ~
+        Shared.Domain: ~
+        Shared.Infrastructure: [Shared.Domain, Framework]
 
-        Identity.Domain: [Shared]
-        Identity.Application: [Identity.Domain, Shared]
-        Identity.Infrastructure: [Identity.Application, Identity.Domain, Shared, Framework]
+        Identity.Api: [Shared.Domain]
+        Identity.Domain: [Shared.Domain]
+        Identity.Application: [Identity.Domain, Identity.Api, Shared.Domain, TasteCollection.Api, Social.Api]
+        Identity.Infrastructure: [Identity.Application, Identity.Domain, Identity.Api, Shared.Domain, Shared.Infrastructure, Framework, TasteCollection.Api, Social.Api]
 
-        TasteCollection.Domain: [Shared]
-        TasteCollection.Application: [TasteCollection.Domain, Shared]
-        TasteCollection.Infrastructure: [TasteCollection.Application, TasteCollection.Domain, Shared, Framework]
+        TasteCollection.Api: [Shared.Domain]
+        TasteCollection.Domain: [Shared.Domain]
+        TasteCollection.Application: [TasteCollection.Domain, TasteCollection.Api, Shared.Domain, Identity.Api, Social.Api]
+        TasteCollection.Infrastructure: [TasteCollection.Application, TasteCollection.Domain, TasteCollection.Api, Shared.Domain, Shared.Infrastructure, Framework, Identity.Api, Social.Api]
 
-        Social.Domain: [Shared]
-        # Cross-module edges: Social's Application layer calls TasteCollection's and Identity's APIs.
-        Social.Application: [Social.Domain, Shared, TasteCollection.Application, Identity.Application]
-        Social.Infrastructure: [Social.Application, Social.Domain, Shared, Framework]
+        Social.Api: [Shared.Domain]
+        Social.Domain: [Shared.Domain]
+        Social.Application: [Social.Domain, Social.Api, Shared.Domain, Identity.Api, TasteCollection.Api]
+        Social.Infrastructure: [Social.Application, Social.Domain, Social.Api, Shared.Domain, Shared.Infrastructure, Framework, Identity.Api, TasteCollection.Api]
