@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="App\TasteCollection\Domain\Model\Ingredient" table="ingredients">
+        <id name="id" type="ingredient_id" column="id"/>
+        <field name="name" type="string" column="name" length="150"/>
+        <field name="category" type="string" column="category" length="50"/>
+        <field name="region" type="string" column="region" length="50"/>
+        <field name="commonness" type="float" column="commonness"/>
+        <field name="createdAt" type="datetime_immutable" column="created_at"/>
+        <many-to-one field="defaultPreparation" target-entity="App\TasteCollection\Domain\Model\Preparation">
+            <join-column name="default_preparation_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+        <unique-constraints>
+            <unique-constraint name="uniq_ingredients_name" columns="name"/>
+        </unique-constraints>
+        <indexes>
+            <index name="idx_ingredients_default_preparation" columns="default_preparation_id"/>
+        </indexes>
+    </entity>
+</doctrine-mapping>

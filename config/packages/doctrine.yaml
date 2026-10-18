@@ -5,6 +5,10 @@ doctrine:
         # Id value objects stored as GUID columns.
         types:
             user_id: App\Shared\Infrastructure\Persistence\Doctrine\UserIdType
+            preparation_id: App\TasteCollection\Infrastructure\Persistence\Doctrine\Type\PreparationIdType
+            ingredient_id: App\TasteCollection\Infrastructure\Persistence\Doctrine\Type\IngredientIdType
+            variant_id: App\TasteCollection\Infrastructure\Persistence\Doctrine\Type\VariantIdType
+            taste_judgment_id: App\TasteCollection\Infrastructure\Persistence\Doctrine\Type\TasteJudgmentIdType
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore

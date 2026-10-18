@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="App\TasteCollection\Domain\Model\IngredientVariant" table="ingredient_variants">
+        <unique-constraints>
+            <unique-constraint name="uniq_variants_ingredient_preparation" columns="ingredient_id,preparation_id"/>
+        </unique-constraints>
+        <id name="id" type="variant_id" column="id"/>
+        <many-to-one field="ingredient" target-entity="App\TasteCollection\Domain\Model\Ingredient">
+            <join-column name="ingredient_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+        </many-to-one>
+        <many-to-one field="preparation" target-entity="App\TasteCollection\Domain\Model\Preparation">
+            <join-column name="preparation_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+        <indexes>
+            <index name="idx_variants_ingredient" columns="ingredient_id"/>
+            <index name="idx_variants_preparation" columns="preparation_id"/>
+        </indexes>
+    </entity>
+</doctrine-mapping>
