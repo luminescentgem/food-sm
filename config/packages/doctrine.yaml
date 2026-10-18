@@ -2,6 +2,9 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         profiling_collect_backtrace: '%kernel.debug%'
+        # Id value objects stored as GUID columns.
+        types:
+            user_id: App\Shared\Infrastructure\Persistence\Doctrine\UserIdType
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
