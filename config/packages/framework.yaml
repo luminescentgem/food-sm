@@ -10,6 +10,10 @@ framework:
     #esi: true
     #fragments: true
 
+    exceptions:
+        App\TasteCollection\Domain\Exception\InvalidScore:
+            status_code: 422
+
 when@test:
     framework:
         test: true

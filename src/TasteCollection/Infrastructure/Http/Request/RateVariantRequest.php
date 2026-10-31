@@ -14,6 +14,7 @@ final readonly class RateVariantRequest
         public string $variantId = '',
 
         #[Assert\NotNull]
+        #[Assert\Range(min: 0, max: 10)]
         public ?int $score = null,
     ) {}
 }
