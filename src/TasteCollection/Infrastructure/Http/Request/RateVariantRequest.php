@@ -6,7 +6,7 @@ namespace App\TasteCollection\Infrastructure\Http\Request;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final readonly class RatingVariantRequest
+final readonly class RateVariantRequest
 {
     public function __construct(
         #[Assert\NotBlank]

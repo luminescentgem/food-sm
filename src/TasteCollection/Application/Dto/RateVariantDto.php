@@ -7,7 +7,7 @@ namespace App\TasteCollection\Application\Dto;
 use App\TasteCollection\Domain\Model\TasteJudgment;
 use DateTimeImmutable;
 
-final readonly class RatingVariantDto
+final readonly class RateVariantDto
 {
     private function __construct(
         public string $id,

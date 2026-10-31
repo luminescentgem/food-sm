@@ -7,7 +7,7 @@ namespace App\TasteCollection\Application\UseCase;
 use App\Shared\Domain\Model\UserId;
 use App\TasteCollection\Domain\Model\VariantId;
 
-final readonly class RatingVariant
+final readonly class RateVariant
 {
     public function __construct(
         public UserId    $userId,

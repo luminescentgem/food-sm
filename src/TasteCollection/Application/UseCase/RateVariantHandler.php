@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\TasteCollection\Application\UseCase;
 
 use App\Shared\Domain\Service\IdGenerator;
-use App\TasteCollection\Application\Dto\RatingVariantDto;
+use App\TasteCollection\Application\Dto\RateVariantDto;
 use App\TasteCollection\Domain\Model\TasteJudgment;
 use App\TasteCollection\Domain\Model\TasteJudgmentId;
 use App\TasteCollection\Domain\Repository\TasteJudgmentRepository;
 use Psr\Clock\ClockInterface;
 
-final readonly class RatingVariantHandler
+final readonly class RateVariantHandler
 {
     public function __construct(
         private IdGenerator $ids,
@@ -19,7 +19,7 @@ final readonly class RatingVariantHandler
         private ClockInterface $clock,
     ) {}
 
-    public function __invoke(RatingVariant $command): RatingVariantDto
+    public function __invoke(RateVariant $command): RateVariantDto
     {
         /** @var TasteJudgmentId $id */
         $id = $this->ids->next(TasteJudgmentId::class);
@@ -34,6 +34,6 @@ final readonly class RatingVariantHandler
 
         $this->judgments->append($judgment);
 
-        return RatingVariantDto::fromJudgment($judgment);
+        return RateVariantDto::fromJudgment($judgment);
     }
 }
