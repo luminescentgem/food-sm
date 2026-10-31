@@ -11,6 +11,8 @@ framework:
     #fragments: true
 
     exceptions:
+        App\TasteCollection\Domain\Exception\VariantNotFound:
+            status_code: 404
         App\TasteCollection\Domain\Exception\InvalidScore:
             status_code: 422
 
