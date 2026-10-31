@@ -233,6 +233,8 @@ commit never adds migrations for two modules.
   a decision, a rejected alternative, a constraint. Wrap at 72 characters.
 - Footers use git trailer syntax (`Token: value`), one per line, after a blank
   line. `Co-Authored-By:` goes here.
+- **Claude attribution**: add the `Co-Authored-By: Claude` footer only when Claude
+  produced code in the commit. Leave it out when Claude only wrote the commit message.
 - **Breaking changes**: add `!` before the colon **and** a `BREAKING CHANGE:`
   footer explaining the change and what callers must do. This is required whenever
   an `/api` contract changes (path, method, request body, response shape, status
