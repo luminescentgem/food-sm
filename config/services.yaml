@@ -19,6 +19,7 @@ services:
             - '../src/Kernel.php'
             - '../src/*/Domain/Model/'
             - '../src/*/Domain/Event/'
+            - '../src/*/Domain/Specification/'
 
     # Cross-module APIs: an interface in <Module>\Application with a single implementation
     # is aliased automatically by autowiring. Add an explicit alias only if a second

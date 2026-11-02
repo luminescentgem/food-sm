@@ -143,8 +143,8 @@ something to whitelist.** Changing `deptrac.yaml` itself needs explicit approval
 
 ### Wiring
 
-- Every class in `src/` is autowired, except `*/Domain/Model/`, `*/Domain/Event/` and
-  `Shared/Domain/`.
+- Every class in `src/` is autowired, except `*/Domain/Model/`, `*/Domain/Event/`,
+  `*/Domain/Specification/` and `Shared/Domain/`.
 - An API interface with one implementation is aliased automatically. Add an explicit
   alias (`#[AsAlias]`) only when a second implementation appears.
 - Routes: each module's `Infrastructure/Http/Controller/` is loaded in
