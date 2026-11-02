@@ -72,7 +72,7 @@ final readonly class DbalRatingsReader implements RatingsReader
      *      ingredient_name: string,
      *      preparation_id: string,
      *      preparation_name: string,
-     *      score: float,
+     *      score: int,
      *      rated_at: string,
      * } $row */
     private function newCurrentlyRatedVariantDto(array $row): CurrentlyRatedVariantDto
