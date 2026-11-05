@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -31,11 +32,11 @@ final readonly class RateVariantController
         requirements: ['userId' => Requirement::UUID],
     )]
     public function __invoke(
-        string $userId,
+        #[ValueResolver('existing_user')] UserId $userId,
         #[MapRequestPayload] RateVariantRequest $request,
     ): Response {
         $rating = ($this->handler)(new RateVariant(
-            UserId::fromString($userId),
+            $userId,
             VariantId::fromString($request->variantId),
             $request->score,
         ));

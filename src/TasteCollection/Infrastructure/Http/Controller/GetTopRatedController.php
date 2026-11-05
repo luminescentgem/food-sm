@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -29,18 +30,14 @@ final readonly class GetTopRatedController
         requirements: ['userId' => Requirement::UUID],
     )]
     public function __invoke(
-        string $userId,
+        #[ValueResolver('existing_user')] UserId $userId,
         #[MapQueryParameter(
             filter: \FILTER_VALIDATE_INT,
             options: ['min_range' => 1, 'max_range' => 50],
             validationFailedStatusCode: 422,
         )] int $limit = 5,
     ): Response {
-        $top = ($this->handler)(new GetTopRated(
-            UserId::fromString($userId),
-            $limit
-        ));
-
+        $top = ($this->handler)(new GetTopRated($userId, $limit));
         $jsonContent = $this->serializer->serialize($top, 'json');
 
         return JsonResponse::fromJsonString(

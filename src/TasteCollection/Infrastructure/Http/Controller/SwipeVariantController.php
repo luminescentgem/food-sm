@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -31,11 +32,11 @@ final readonly class SwipeVariantController
         requirements: ['userId' => Requirement::UUID],
     )]
     public function __invoke(
-        string $userId,
+        #[ValueResolver('existing_user')] UserId $userId,
         #[MapRequestPayload] SwipeVariantRequest $request,
     ): Response {
         $swipe = ($this->handler)(new SwipeVariant(
-            UserId::fromString($userId),
+            $userId,
             VariantId::fromString($request->variantId),
             $request->liked,
         ));
