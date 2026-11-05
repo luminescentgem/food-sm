@@ -11,6 +11,8 @@ framework:
     #fragments: true
 
     exceptions:
+        App\Identity\Domain\Exception\UnknownUser:
+            status_code: 404
         App\TasteCollection\Domain\Exception\VariantNotFound:
             status_code: 404
         App\TasteCollection\Domain\Exception\InvalidScore:
