@@ -35,7 +35,7 @@ final readonly class DbalRatingsReader implements RatingsReader
     /** @return array{string, array{user: string}} */
     private function currentRatingsQuery(CurrentRatings $spec): array
     {
-        [$command, $params] = $this->fullRatingsQuery(new UserRatings($spec->id));
+        [$command, $params] = $this->allRatingsQuery(new UserRatings($spec->id));
 
         return [
             "SELECT * FROM ($command) as r
@@ -46,7 +46,7 @@ final readonly class DbalRatingsReader implements RatingsReader
     }
 
     /** @return array{string, array{user: string}} */
-    private function fullRatingsQuery(UserRatings $spec): array
+    private function allRatingsQuery(UserRatings $spec): array
     {
         return [
             'SELECT j.id, j.variant_id, j.score, j.created_at AS rated_at,
