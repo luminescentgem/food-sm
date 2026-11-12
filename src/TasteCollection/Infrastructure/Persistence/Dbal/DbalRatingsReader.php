@@ -23,7 +23,7 @@ final readonly class DbalRatingsReader implements RatingsReader
         [$command, $params] = $this->currentRatingsQuery($spec->ratings);
         $rows = $this->db->fetchAllAssociative(
             "SELECT * FROM ($command) AS r
-             ORDER BY r.score DESC
+             ORDER BY r.score DESC, r.rated_at DESC
              LIMIT :limit
              ;",
             $params + ["limit" => $spec->limit],
